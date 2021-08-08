@@ -5,9 +5,26 @@ datasource db {
   provider          = "postgresql"
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-
 }
 
 generator client {
   provider = "prisma-client-js"
+}
+
+//create model
+model Book {
+  id              Int      @id @default(autoincrement())
+  title           String   @db.VarChar(255)
+  type            String   @db.VarChar(30)
+  author          String   @db.VarChar(25)
+  publicationdate DateTime @updatedAt
+}
+
+model Pet {
+  id        Int     @id @default(autoincrement())
+  name      String  @db.VarChar(30)
+  age       Int
+  type      String  @db.VarChar(30)
+  breed     String  @db.VarChar(50)
+  microchip Boolean @default(false)
 }
