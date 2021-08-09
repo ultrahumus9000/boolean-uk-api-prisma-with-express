@@ -1,9 +1,9 @@
-const { bookData } = require("../mockdata");
+const prismaDB = require("../database");
 
 async function postOneBook(req, res) {
   const newBook = req.body;
   try {
-    const newBookFromServer = await req.prismaDB.book.create({
+    const newBookFromServer = await prismaDB.book.create({
       data: newBook,
     });
     res.json(newBookFromServer);
@@ -15,7 +15,7 @@ async function postOneBook(req, res) {
 
 async function getAllBooks(req, res) {
   try {
-    const allBooks = await req.prismaDB.book.findMany();
+    const allBooks = await prismaDB.book.findMany();
     res.json(allBooks);
   } catch (error) {
     console.log(error);
@@ -43,7 +43,7 @@ async function getTypeBooks(req, res) {
     }
   } else {
     try {
-      const allBooks = await req.prismaDB.book.findMany({
+      const allBooks = await prismaDB.book.findMany({
         where: {
           type: bookType,
           title: { contains: bookTopic },
@@ -65,7 +65,7 @@ async function getBooksWithName(req, res) {
 
   if (order) {
     try {
-      const allBooks = await req.prismaDB.book.findMany({
+      const allBooks = await prismaDB.book.findMany({
         where: { author: bookAuthor },
         orderBy: {
           publicationdate: "desc",
@@ -80,7 +80,7 @@ async function getBooksWithName(req, res) {
     }
   } else {
     try {
-      const allBooks = await req.prismaDB.book.findMany({
+      const allBooks = await prismaDB.book.findMany({
         where: { author: bookAuthor },
       });
       if (allBooks.length === 0) {
@@ -96,7 +96,7 @@ async function getBooksWithName(req, res) {
 async function getOneBook(req, res) {
   const bookId = Number(req.params.id);
   try {
-    const theBook = await req.prismaDB.book.findUnique({
+    const theBook = await prismaDB.book.findUnique({
       where: {
         id: bookId,
       },
@@ -116,14 +116,14 @@ async function updateOneBook(req, res) {
   const bookId = Number(req.params.id);
 
   try {
-    let theBook = await req.prismaDB.book.findUnique({
+    let theBook = await prismaDB.book.findUnique({
       where: {
         id: bookId,
       },
     });
     theBook = { ...theBook, ...req.body };
     delete theBook.id;
-    const updateBook = await req.prismaDB.book.update({
+    const updateBook = await prismaDB.book.update({
       where: {
         id: bookId,
       },
@@ -140,7 +140,7 @@ async function deleteOneBook(req, res) {
   const bookId = Number(req.params.id);
 
   try {
-    const deleteBook = await req.prismaDB.book.delete({
+    const deleteBook = await prismaDB.book.delete({
       where: {
         id: bookId,
       },

@@ -1,3 +1,7 @@
+const { PrismaClient } = require("@prisma/client");
+
+const prismaDB = new PrismaClient();
+
 const faker = require("faker");
 const bookData = [];
 
@@ -18,7 +22,6 @@ for (i = 0; i <= 10; i++) {
 }
 
 const petType = ["dog", "piggy", "duck", "cat", "python"];
-const breedType = ["yorkshire", "highland", "beijingpud", "kingkong", "ussop"];
 
 const petData = [];
 for (i = 0; i <= 10; i++) {
@@ -26,10 +29,22 @@ for (i = 0; i <= 10; i++) {
     name: faker.name.firstName(),
     age: getRandomInt(),
     type: petType[getRandomInt()],
-    breed: breedType[getRandomInt()],
+    breed: faker.animal.dog(),
     microchip: i % 2 === 0 ? true : false,
   };
   petData.push(newPet);
 }
 
-module.exports = { bookData, petData };
+async function main() {
+  await prismaDB.book.createMany({ data: bookData });
+  await prismaDB.pet.createMany({ data: petType });
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

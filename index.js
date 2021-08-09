@@ -1,9 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
-const { PrismaClient } = require("@prisma/client");
-const { bookData, petData } = require("./src/mockdata");
 
-const prismaDB = new PrismaClient();
 const app = express();
 const bookRouter = require("./src/book/router");
 const petRouter = require("./src/pet/router");
@@ -12,17 +9,20 @@ const petRouter = require("./src/pet/router");
 app.use(morgan("dev"));
 // 3rd
 app.use(express.json());
-app.use((req, res, next) => {
-  req.prismaDB = prismaDB;
-  next();
-});
+
+//move to the database.js
+
+// app.use((req, res, next) => {
+//   req.prismaDB = prismaDB;
+//   next();
+// });
 // Routes
 // 4th
 app.use("/books", bookRouter);
 app.use("/pets", petRouter);
 // 5th
-app.get("*", (req, res) => {
-  res.json({ bookData, petData });
+app.all("*", (req, res) => {
+  res.status(404).json("doesnt exist such route");
 });
 // Start the server
 
