@@ -17,7 +17,7 @@ model Book {
   title           String   @db.VarChar(255)
   type            String   @db.VarChar(30)
   author          String   @db.VarChar(25)
-  publicationdate DateTime @updatedAt
+  publicationdate DateTime @default(now())
 }
 
 model Pet {
