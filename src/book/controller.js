@@ -122,16 +122,12 @@ async function updateOneBook(req, res) {
       },
     });
     theBook = { ...theBook, ...req.body };
+    delete theBook.id;
     const updateBook = await req.prismaDB.book.update({
       where: {
         id: bookId,
       },
-      data: {
-        title: theBook.title,
-        type: theBook.type,
-        author: theBook.author,
-        publicationdate: theBook.publicationdate,
-      },
+      data: theBook,
     });
     res.json(updateBook);
   } catch (error) {
@@ -150,7 +146,6 @@ async function deleteOneBook(req, res) {
       },
     });
     res.json("book is deleted");
-    console.log("127", bookId);
   } catch (error) {
     res.json(error);
   }
