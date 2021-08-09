@@ -35,9 +35,10 @@ for (i = 0; i <= 10; i++) {
   petData.push(newPet);
 }
 
+console.log(typeof faker.animal.dog());
 async function main() {
   await prismaDB.book.createMany({ data: bookData });
-  await prismaDB.pet.createMany({ data: petType });
+  await prismaDB.pet.createMany({ data: petData });
 }
 
 main()
@@ -46,5 +47,5 @@ main()
     process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    await prismaDB.$disconnect();
   });

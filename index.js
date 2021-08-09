@@ -39,6 +39,6 @@ app.all("*", (req, res) => {
 // createData();
 
 // 1st
-app.listen(3000, () => {
+app.listen(3001, () => {
   console.log("I'm listening...");
 });

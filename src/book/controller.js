@@ -2,14 +2,19 @@ const prismaDB = require("../database");
 
 async function postOneBook(req, res) {
   const newBook = req.body;
+
   try {
+    // if(newBook.publicationdate.match()) try regex
+    //if not convert it to iso 8601
+    newBook.publicationdate = new Date(newBook.publicationdate).toISOString();
     const newBookFromServer = await prismaDB.book.create({
       data: newBook,
     });
+
     res.json(newBookFromServer);
-  } catch (error) {
-    console.log(error);
-    res.json(error);
+  } catch ({ message }) {
+    console.log(message);
+    res.json(message);
   }
 }
 
@@ -30,7 +35,7 @@ async function getTypeBooks(req, res) {
     try {
       const allBooks = await req.prismaDB.book.findMany({
         where: {
-          type: bookType,
+          type: { equals: bookType, mode: "insensitive" },
         },
       });
       if (allBooks.length === 0) {
@@ -45,8 +50,8 @@ async function getTypeBooks(req, res) {
     try {
       const allBooks = await prismaDB.book.findMany({
         where: {
-          type: bookType,
-          title: { contains: bookTopic },
+          type: { equals: bookType, mode: "insensitive" },
+          title: { contains: bookTopic, mode: "insensitive" },
         },
       });
       if (allBooks.length === 0) {
@@ -60,13 +65,13 @@ async function getTypeBooks(req, res) {
 }
 
 async function getBooksWithName(req, res) {
-  const bookAuthor = req.params.author;
+  const bookAuthor = req.params.authorname;
   const order = req.query.order;
 
   if (order) {
     try {
       const allBooks = await prismaDB.book.findMany({
-        where: { author: bookAuthor },
+        where: { author: { contains: bookAuthor, mode: "insensitive" } },
         orderBy: {
           publicationdate: "desc",
         },
@@ -81,14 +86,14 @@ async function getBooksWithName(req, res) {
   } else {
     try {
       const allBooks = await prismaDB.book.findMany({
-        where: { author: bookAuthor },
+        where: { author: { contains: bookAuthor, mode: "insensitive" } },
       });
       if (allBooks.length === 0) {
-        throw "no such author";
+        res.json("no such author");
       }
       res.json(allBooks);
     } catch (error) {
-      res.json(error);
+      res.json(error.message);
     }
   }
 }

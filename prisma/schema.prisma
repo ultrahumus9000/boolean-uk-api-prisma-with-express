@@ -24,7 +24,7 @@ model Pet {
   id        Int     @id @default(autoincrement())
   name      String  @db.VarChar(30)
   age       Int
-  type      String  @db.VarChar(30)
+  type      String  @db.VarChar(50)
   breed     String  @db.VarChar(50)
   microchip Boolean @default(false)
 }
