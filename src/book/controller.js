@@ -31,30 +31,24 @@ async function getAllBooks(req, res) {
 async function getTypeBooks(req, res) {
   const bookType = req.params.type;
   const bookTopic = req.query.topic;
+  console.log(bookTopic);
+
+  const queryObj = {
+    type: { equals: bookType, mode: "insensitive" },
+    title: bookTopic
+      ? { contains: bookTopic, mode: "insensitive" }
+      : { contains: "" },
+  };
 
   try {
-    if (bookTopic === undefined) {
-      const allBooks = await req.prismaDB.book.findMany({
-        where: {
-          type: { equals: bookType, mode: "insensitive" },
-        },
-      });
-      if (allBooks.length === 0) {
-        throw "no such type";
-      }
-      res.json(allBooks);
-    } else {
-      const allBooks = await prismaDB.book.findMany({
-        where: {
-          type: { equals: bookType, mode: "insensitive" },
-          title: { contains: bookTopic, mode: "insensitive" },
-        },
-      });
-      if (allBooks.length === 0) {
-        throw "no such topic";
-      }
-      res.json(allBooks);
-    }
+    console.log("before query", bookType);
+    const allBooks = await prismaDB.book.findMany({
+      where: queryObj,
+    });
+
+    if (!allBooks.length) throw "no such type";
+
+    res.json({ data: allBooks });
   } catch (error) {
     res.json(error);
   }
