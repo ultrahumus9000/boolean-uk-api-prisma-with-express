@@ -41,7 +41,6 @@ async function getTypeBooks(req, res) {
   };
 
   try {
-    console.log("before query", bookType);
     const allBooks = await prismaDB.book.findMany({
       where: queryObj,
     });
